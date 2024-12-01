@@ -55,6 +55,16 @@ piece_done:
 printBoard:
     # Function prologue
 
+    addiu $sp, $sp, -8      # Allocate stack space
+    sw $ra, 4($sp)          # Save return address
+    sw $s0 0($sp)           # Save $s0 (index)
+
+    #Initialize variables
+    la $t0, board           # Load address of board
+    lw $t1, board_width     # Load board_width
+    lw $t2, board_height    # Load board_height
+    li $t3, 0               # index = 0
+
     # Function epilogue
     
     jr $ra                # Return
