@@ -47,6 +47,9 @@ placePieceOnBoard:
 
 piece_done:
     jr $ra
+
+
+______________________________________________________________________________________________________________________________________________________________________
 # Function: printBoard
 # Arguments: None (uses global variables)
 # Returns: void
@@ -56,23 +59,46 @@ printBoard:
     # Function prologue
     addiu $sp, $sp, -8      # Allocate stack space
     sw $ra, 4($sp)          # Save return address
-    sw $s0 0($sp)           # Save $s0 (index)
+    sw $s0 0($sp)           # 
 
     #Initialize variables
     la $t0, board           # Load address of board
-    lw $t1, board_width     # Load board_width
-    lw $t2, board_height    # Load board_height
-    li $t3, 0               # index = 0
+    lw $t1, board_width     # Load number of columns
+    lw $t2, board_height    # Load number of rows
+    li $t3, 0               # row index = 0
 
 printBoard_outer:
-    bge $t3, $t2, printBoard_done   # If all rows are processed, exit outer loop
-    li $t4, 0               # Reset column index
+    bge $t3, $t2, done      # if row index >= board_height, exit outer loop
+    li $t4, 0               # column index = 0
 
 printBoard_inner:
-    
+    mul $t5, $t3, $t1       # row offset = row index * number of columns
+    add $t6, $t5, $t4       # array index = row offset + column index
+    add $t7, $t0, $t6       # memory address of board element
+    lb $a0, 0($t7)          # Load current board element
+    li $v0, 11              # Set syscall code for printing character
+    addi $a0, $a0, '0'      # Convert number to ASCII character
+    syscall                 # Print character
+    li $v0, 11              # Set syscall code for printing space
+    syscall                 # Print the space
+
+    addiu $t4, $t4, 1       # column index + 1
+    j printBoard_inner      # Jump back to process the next column
+
+printBoard next_row:
+    li $v0, 11              # Set syscall code for printing newline
+    li $a0, '\n'            # Load newline character
+    syscall                 # Print the space
+    addiu $t3, $t3, 1       # Increment row index
+    j printBoard_outer      # Jump back to process the next row
+
+done:
     # Function epilogue
-    
-    jr $ra                # Return
+    lw $ra, 4($sp)          # Restore return address
+    lw $s0, 0($sp)          # Restore $s0
+    addiu $sp, $sp, 8       # Deallocate Stack Space
+    jr $ra                  # Return
+______________________________________________________________________________________________________________________________________________________________________
 
 # Function: place_tile
 # Arguments: 
