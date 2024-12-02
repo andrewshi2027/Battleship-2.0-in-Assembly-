@@ -54,7 +54,6 @@ piece_done:
 
 printBoard:
     # Function prologue
-
     addiu $sp, $sp, -8      # Allocate stack space
     sw $ra, 4($sp)          # Save return address
     sw $s0 0($sp)           # Save $s0 (index)
@@ -65,6 +64,12 @@ printBoard:
     lw $t2, board_height    # Load board_height
     li $t3, 0               # index = 0
 
+printBoard_outer:
+    bge $t3, $t2, printBoard_done   # If all rows are processed, exit outer loop
+    li $t4, 0               # Reset column index
+
+printBoard_inner:
+    
     # Function epilogue
     
     jr $ra                # Return
