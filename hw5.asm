@@ -59,7 +59,6 @@ printBoard:
     # Function prologue
     addiu $sp, $sp, -8      # Allocate stack space
     sw $ra, 4($sp)          # Save return address
-    sw $s0 0($sp)           # 
 
     #Initialize variables
     la $t0, board           # Load address of board
@@ -95,7 +94,6 @@ printBoard next_row:
 done:
     # Function epilogue
     lw $ra, 4($sp)          # Restore return address
-    lw $s0, 0($sp)          # Restore $s0
     addiu $sp, $sp, 8       # Deallocate Stack Space
     jr $ra                  # Return
 ______________________________________________________________________________________________________________________________________________________________________
