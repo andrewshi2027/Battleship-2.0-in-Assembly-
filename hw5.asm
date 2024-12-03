@@ -10,16 +10,41 @@ extra_newline: .asciiz "\n\n" # Extra newline at end
 .globl placePieceOnBoard 
 .globl test_fit 
 
+______________________________________________________________________________________________________________________________________________________________________
 # Function: zeroOut
 # Arguments: None
 # Returns: void
 zeroOut:
     # Function prologue
+    addiu $sp, $sp, -8 
+    sw $ra, 4($sp)
 
+    # Initialize variables
+    la $t0, board           # Load address of board
+    lw $t1, board_width     # Load number of columns
+    lw $t2, board_height    # Load number of rows
+    li $t3, 0               # index = 0
+
+zeroOut_outer: 
+    bge $t3, $t2, zero_done # if row index >= board_height, exit outer loop
+    li $t4, 0               # column index = 0
+
+zeroOut_inner: 
+    bge $t4, $t1, next_row      # If all columns are done, go next row
+    mul $t5, $t3, $t1           # row offset = row index * number of columns
+    add $t6, $t5, $t4           # array index = row offset + column index
+    add $t7, $t0, $t6           # memory address of board element
+    lb $a0, 0($t7)              # Load current board element
+    # Set board[index] to 0
+
+    addiu $t4, $t4, 1           # column index + 1
+    j zeroOut_inner          # Jump back to process the next column
+
+next_row:
 zero_done:
     # Function epilogue
     jr $ra
-
+______________________________________________________________________________________________________________________________________________________________________
 # Function: placePieceOnBoard
 # Arguments: 
 #   $a0 - address of piece struct
@@ -109,7 +134,7 @@ ________________________________________________________________________________
 
 place_tile:
     jr $ra
-
+______________________________________________________________________________________________________________________________________________________________________
 # Function: test_fit
 # Arguments: 
 #   $a0 - address of piece array (5 pieces)
