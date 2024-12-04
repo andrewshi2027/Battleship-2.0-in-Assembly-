@@ -19,21 +19,21 @@ zeroOut:
     sw $ra, 4($sp)
 
     # Initialize variables
-    la $t0, board           # Load address of board
-    lw $t1, board_width     # Load number of columns
-    lw $t2, board_height    # Load number of rows
-    li $t3, 0               # index = 0
+    la $t0, board               # Load address of board
+    lw $t1, board_width         # Load number of columns
+    lw $t2, board_height        # Load number of rows
+    li $t3, 0                   # index = 0
 
 zeroOut_outer: 
-    bge $t3, $t2, zero_done # if row index >= board_height, exit outer loop
-    li $t4, 0               # column index = 0
+    bge $t3, $t2, zero_done     # if row index >= board_height, exit outer loop
+    li $t4, 0                   # column index = 0
 
 zeroOut_inner: 
     bge $t4, $t1, next_row      # If all columns are done, go next row
     mul $t5, $t3, $t1           # row offset = row index * number of columns
     add $t6, $t5, $t4           # array index = row offset + column index
     add $t7, $t0, $t6           # memory address of board element
-    sb $0, 0($t7)            # Set board[index] to 0
+    sb $0, 0($t7)               # Set board[index] to 0
 
     addiu $t4, $t4, 1           # column index + 1
     j zeroOut_inner             # Jump back to process the next column
@@ -45,7 +45,7 @@ next_row:
 zero_done:
     # Function epilogue
     lw $ra, 4($sp)              # Restore stack address 
-    addiu $sp, $sp, 8            # Deallocate stack space
+    addiu $sp, $sp, 8           # Deallocate stack space
     jr $ra                      # Return
 
 
@@ -91,31 +91,31 @@ piece_done:
 
 printBoard:
     # Function prologue
-    addiu $sp, $sp, -8      # Allocate stack space
-    sw $ra, 4($sp)          # Save return address
+    addiu $sp, $sp, -8          # Allocate stack space
+    sw $ra, 4($sp)              # Save return address
 
     #Initialize variables
-    la $t0, board           # Load address of board
-    lw $t1, board_width     # Load number of columns
-    lw $t2, board_height    # Load number of rows
-    li $t3, 0               # row index = 0
+    la $t0, board               # Load address of board
+    lw $t1, board_width         # Load number of columns
+    lw $t2, board_height        # Load number of rows
+    li $t3, 0                   # row index = 0
 
 printBoard_outer:
-    bge $t3, $t2, done      # if row index >= board_height, exit outer loop
-    li $t4, 0               # column index = 0
+    bge $t3, $t2, done          # if row index >= board_height, exit outer loop
+    li $t4, 0                   # column index = 0
 
 printBoard_inner:
     bge $t4, $t1, printBoard_next_row      
-    mul $t5, $t3, $t1       # row offset = row index * number of columns
-    add $t6, $t5, $t4       # array index = row offset + column index
-    add $t7, $t0, $t6       # memory address of board element
-    lb $a0, 0($t7)          # Load current board element
-    li $v0, 11              # Set syscall code for printing character
-    addi $a0, $a0, '0'      # Convert number to ASCII character
-    syscall                 # Print character
-    li $v0, 11              # Set syscall code for printing space
-    li $a0, ' '             # Space character
-    syscall                 # Print the space
+    mul $t5, $t3, $t1           # row offset = row index * number of columns
+    add $t6, $t5, $t4           # array index = row offset + column index
+    add $t7, $t0, $t6           # memory address of board element
+    lb $a0, 0($t7)              # Load current board element
+    li $v0, 11                  # Set syscall code for printing character
+    addi $a0, $a0, '0'          # Convert number to ASCII character
+    syscall                     # Print character
+    li $v0, 11                  # Set syscall code for printing space
+    li $a0, ' '                 # Space character
+    syscall                     # Print the space
 
     addi $t4, $t4, 1       # column index + 1
     j printBoard_inner      # Jump back to process the next column
