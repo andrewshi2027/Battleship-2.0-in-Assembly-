@@ -10,13 +10,12 @@ extra_newline: .asciiz "\n\n" # Extra newline at end
 .globl placePieceOnBoard 
 .globl test_fit 
 
-______________________________________________________________________________________________________________________________________________________________________
 # Function: zeroOut
 # Arguments: None
 # Returns: void
 zeroOut:
     # Function prologue
-    addiu $sp, $sp, -8 
+    addi $sp, $sp, -8 
     sw $ra, 4($sp)
 
     # Initialize variables
@@ -37,14 +36,19 @@ zeroOut_inner:
     lb $a0, 0($t7)              # Load current board element
     # Set board[index] to 0
 
-    addiu $t4, $t4, 1           # column index + 1
-    j zeroOut_inner          # Jump back to process the next column
+    addi $t4, $t4, 1            # column index + 1
+    j zeroOut_inner             # Jump back to process the next column
 
 next_row:
+    addi $t4, $t4, 1            # Increment Row Index
+    j zeroOut_outer             # Continue outer loop
+
 zero_done:
     # Function epilogue
-    jr $ra
-______________________________________________________________________________________________________________________________________________________________________
+    lw $ra, 0($sp)              # Restore stack address 
+    addi $sp, $sp, 4            # Deallocate stack space
+    jr $ra                      # Return
+
 # Function: placePieceOnBoard
 # Arguments: 
 #   $a0 - address of piece struct
@@ -74,7 +78,6 @@ piece_done:
     jr $ra
 
 
-______________________________________________________________________________________________________________________________________________________________________
 # Function: printBoard
 # Arguments: None (uses global variables)
 # Returns: void
@@ -96,6 +99,7 @@ printBoard_outer:
     li $t4, 0               # column index = 0
 
 printBoard_inner:
+    bge $t3, $t2, printBoard_next_row      
     mul $t5, $t3, $t1       # row offset = row index * number of columns
     add $t6, $t5, $t4       # array index = row offset + column index
     add $t7, $t0, $t6       # memory address of board element
@@ -104,12 +108,13 @@ printBoard_inner:
     addi $a0, $a0, '0'      # Convert number to ASCII character
     syscall                 # Print character
     li $v0, 11              # Set syscall code for printing space
+    li $a0, ' '             # Space character
     syscall                 # Print the space
 
-    addiu $t4, $t4, 1       # column index + 1
+    addi $t4, $t4, 1       # column index + 1
     j printBoard_inner      # Jump back to process the next column
 
-printBoard next_row:
+printBoard_next_row:
     li $v0, 11              # Set syscall code for printing newline
     li $a0, '\n'            # Load newline character
     syscall                 # Print the space
@@ -121,7 +126,7 @@ done:
     lw $ra, 4($sp)          # Restore return address
     addiu $sp, $sp, 8       # Deallocate Stack Space
     jr $ra                  # Return
-______________________________________________________________________________________________________________________________________________________________________
+
 
 # Function: place_tile
 # Arguments: 
@@ -134,7 +139,11 @@ ________________________________________________________________________________
 
 place_tile:
     jr $ra
-______________________________________________________________________________________________________________________________________________________________________
+
+
+
+
+
 # Function: test_fit
 # Arguments: 
 #   $a0 - address of piece array (5 pieces)
