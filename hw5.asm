@@ -33,21 +33,24 @@ zeroOut_inner:
     mul $t5, $t3, $t1           # row offset = row index * number of columns
     add $t6, $t5, $t4           # array index = row offset + column index
     add $t7, $t0, $t6           # memory address of board element
-    lb $a0, 0($t7)              # Load current board element
-    # Set board[index] to 0
+    sb $0, 0($t7)            # Set board[index] to 0
 
-    addi $t4, $t4, 1            # column index + 1
+    addiu $t4, $t4, 1           # column index + 1
     j zeroOut_inner             # Jump back to process the next column
 
 next_row:
-    addi $t4, $t4, 1            # Increment Row Index
+    addi $t3, $t3, 1            # Increment Row Index
     j zeroOut_outer             # Continue outer loop
 
 zero_done:
     # Function epilogue
-    lw $ra, 0($sp)              # Restore stack address 
-    addi $sp, $sp, 4            # Deallocate stack space
+    lw $ra, 4($sp)              # Restore stack address 
+    addiu $sp, $sp, 8            # Deallocate stack space
     jr $ra                      # Return
+
+
+
+
 
 # Function: placePieceOnBoard
 # Arguments: 
@@ -78,6 +81,9 @@ piece_done:
     jr $ra
 
 
+
+
+
 # Function: printBoard
 # Arguments: None (uses global variables)
 # Returns: void
@@ -99,7 +105,7 @@ printBoard_outer:
     li $t4, 0               # column index = 0
 
 printBoard_inner:
-    bge $t3, $t2, printBoard_next_row      
+    bge $t4, $t1, printBoard_next_row      
     mul $t5, $t3, $t1       # row offset = row index * number of columns
     add $t6, $t5, $t4       # array index = row offset + column index
     add $t7, $t0, $t6       # memory address of board element
