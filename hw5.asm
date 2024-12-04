@@ -117,21 +117,21 @@ printBoard_inner:
     li $a0, ' '                 # Space character
     syscall                     # Print the space
 
-    addi $t4, $t4, 1       # column index + 1
-    j printBoard_inner      # Jump back to process the next column
+    addi $t4, $t4, 1            # column index + 1
+    j printBoard_inner          # Jump back to process the next column
 
 printBoard_next_row:
-    li $v0, 11              # Set syscall code for printing newline
-    li $a0, '\n'            # Load newline character
-    syscall                 # Print the space
-    addiu $t3, $t3, 1       # Increment row index
-    j printBoard_outer      # Jump back to process the next row
+    li $v0, 11                  # Set syscall code for printing newline
+    li $a0, '\n'                # Load newline character
+    syscall                     # Print the space
+    addiu $t3, $t3, 1           # Increment row index
+    j printBoard_outer          # Jump back to process the next row
 
 done:
     # Function epilogue
-    lw $ra, 4($sp)          # Restore return address
-    addiu $sp, $sp, 8       # Deallocate Stack Space
-    jr $ra                  # Return
+    lw $ra, 4($sp)              # Restore return address
+    addiu $sp, $sp, 8           # Deallocate Stack Space
+    jr $ra                      # Return
 
 
 # Function: place_tile
