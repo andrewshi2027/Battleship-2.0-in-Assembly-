@@ -145,32 +145,32 @@ done:
 
 place_tile:
     # Check if row or column is out of bounds
-    lw $t0, board_width
-    lw $t1, board_height
+    lw $t0, board_width         # Load board_width
+    lw $t1, board_height        # Load board_height
     bge $a0, $t1, out           # If row >= board_height
     bge $a1, $t0, out           # If column >= board_width
 
     # Calculate index in row-major order
-    mul $t2, $a0, $t0
-    add $t2, $t2, $a1
-    la $t3, board
-    add $t3, $t3, $t2
+    mul $t2, $a0, $t0           # t2 = row * board_width
+    add $t2, $t2, $a1           # t2 = row * board_width + column
+    la $t3, board               # Load base address of board
+    add $t3, $t3, $t2           # t3 = address of board[index]
 
     # Check if cell is occupied
-    lb $t4, 0($t3)
-    bne $t4, $0, occupied
+    lb $t4, 0($t3)              # Load board[index]
+    bne $t4, $0, occupied       # If board[index] != 0
 
     # Place value on the board
-    sb $a2, 0($t3)
-    li $v0, 0
+    sb $a2, 0($t3)              # Set board[index] = value
+    li $v0, 0                   # Return 0
     jr $ra
 
 occupied:
-    li $v0, 1
+    li $v0, 1                   # Return 1 (occupied)
     jr $ra
 
 out: 
-    li $v0, 2
+    li $v0, 2                   # Return 2 (out of bounds)
     jr $ra
 
 
