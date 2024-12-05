@@ -187,6 +187,32 @@ test_fit:
 
 T_orientation4:
     # Study the other T orientations in skeleton.asm to understand how to write this label/subroutine
+    move $a0, $s5               # row
+    move $a1, $s6               # col
+    move $a2, $s1
+    jal place_tile              # Place center tile
+    or $s2, $s2, $v0
+
+    move $a0, $s5
+    addi $a0, $a0, -1           # row - 1
+    move $a1, $s6               # col
+    move $a2, $s1
+    jal place_tile              # Place upper tile
+    or $s2, $s2, $v0
+
+    move $a0, $s5
+    addi $a0, $a0, 1            # row + 1
+    move $a1, $s6               # col
+    move $a2, $s1
+    jal place_tile              # Place lower tile
+    or $s2, $s2, $v0
+
+    move $a0, $s5               # row
+    addi $a1, $a1, 1            # col + 1
+    move $a2, $s1
+    jal place_tile              # Place right tile
+    or $s2, $s2, $v0
+
     j piece_done
 
 .include "skeleton.asm"
