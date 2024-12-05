@@ -144,6 +144,33 @@ done:
 # Uses global variables: board (char[]), board_width (int), board_height (int)
 
 place_tile:
+    # Check if row or column is out of bounds
+    lw $t0, board_width
+    lw $t1, board_height
+    bge $a0, $t1, out           # If row >= board_height
+    bge $a1, $t0, out           # If column >= board_width
+
+    # Calculate index in row-major order
+    mul $t2, $a0, $t0
+    add $t2, $t2, $a1
+    la $t3, board
+    add $t3, $t3, $t2
+
+    # Check if cell is occupied
+    lb $t4, 0($t3)
+    bne $t4, $0, occupied
+
+    # Place value on the board
+    sb $a2, 0($t3)
+    li $v0, 0
+    jr $ra
+
+occupied:
+    li $v0, 1
+    jr $ra
+
+out: 
+    li $v0, 2
     jr $ra
 
 
