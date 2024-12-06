@@ -58,8 +58,15 @@ zero_done:
 #   $a1 - ship_num
 placePieceOnBoard:
     # Function prologue
-
+    addiu $sp, $sp, -8
+    sw $ra, 4($sp)
+    
     # Load piece fields
+    lw $t0, 0($a0)              # Load type
+    lw $t1, 4($a0)              # Load orientation
+    lw $t2, 8($a0)              # Load row location
+    lw $t3, 12($a0)             # Load col location
+
     # First switch on type
     li $t0, 1
     beq $s3, $t0, piece_square
@@ -81,7 +88,7 @@ piece_done:
     jr $ra
 
 
-
+    
 
 
 # Function: printBoard
@@ -183,6 +190,9 @@ out:
 test_fit:
     # Function prologue
     jr $ra
+
+
+
 
 
 T_orientation4:
