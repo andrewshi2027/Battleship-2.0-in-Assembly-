@@ -93,7 +93,7 @@ placePieceOnBoard:
     j piece_done       # Invalid type
 
 place_success:
-    li $v0, 0
+    # li $v0, 0
     lw $ra, 0($sp)
     addiu $sp, $sp, 4
     jr $ra
@@ -101,14 +101,14 @@ place_success:
 place_occupied:
     jal zeroOut
     
-    li $v0, 1
+    # li $v0, 1
     lw $ra, 0($sp)
     addiu $sp, $sp, 4
     jr $ra
 
 place_out:
     jal zeroOut
-    li $v0, 2
+    # li $v0, 2
     lw $ra, 0($sp)
     addiu $sp, $sp, 4
     jr $ra
