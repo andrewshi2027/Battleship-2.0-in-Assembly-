@@ -17,8 +17,8 @@ extra_newline: .asciiz "\n\n" # Extra newline at end
 # Returns: void
 zeroOut:
     # Function prologue
-    addi $sp, $sp, -8 
-    sw $ra, 4($sp)
+    addi $sp, $sp, -4 
+    sw $ra, 0($sp)
 
     # Initialize variables
     la $t0, board               # Load address of board
@@ -46,8 +46,8 @@ next_row:
 
 zero_done:
     # Function epilogue
-    lw $ra, 4($sp)              # Restore stack address 
-    addiu $sp, $sp, 8           # Deallocate stack space
+    lw $ra, 0($sp)              # Restore stack address 
+    addiu $sp, $sp, 4           # Deallocate stack space
     jr $ra                      # Return
 
 
