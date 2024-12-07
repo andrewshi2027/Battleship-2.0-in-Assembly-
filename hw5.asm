@@ -107,11 +107,10 @@ place_out:
     li $v0, 2
     jr $ra
 
-
-
 piece_done:
     move $v0, $s2
     beq $v0, $t1, place_success       # Return 0
+    jal zeroOut
     beq $v0, $t2, place_occupied      # Return 1
     beq $v0, $t3, place_out           # Return 2
    
