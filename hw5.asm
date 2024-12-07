@@ -186,10 +186,6 @@ done:
 # Uses global variables: board (char[]), board_width (int), board_height (int)
 
 place_tile:
-    # Function prologue
-    addiu $sp, $sp, -4          # Allocate stack space
-    sw $ra, 0($sp)              # Save return address
-
     # Check if row or column is out of bounds
     lw $t0, board_width         # Load board_width
     lw $t1, board_height        # Load board_height
@@ -213,14 +209,10 @@ place_tile:
 
 p_occupied:
     li $v0, 1                   # Return 1 (occupied)
-    lw $ra, 0($sp)              # Restore return address
-    addiu $sp, $sp, 4           # Deallocate Stack Space
     jr $ra
 
 p_out: 
     li $v0, 2                   # Return 2 (out of bounds)
-    lw $ra, 0($sp)              # Restore return address
-    addiu $sp, $sp, 4           # Deallocate Stack Space
     jr $ra
 
 
