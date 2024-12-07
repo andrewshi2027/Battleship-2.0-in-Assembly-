@@ -10,6 +10,8 @@ extra_newline: .asciiz "\n\n" # Extra newline at end
 .globl placePieceOnBoard 
 .globl test_fit 
 
+
+
 # Function: zeroOut
 # Arguments: None
 # Returns: void
@@ -62,7 +64,8 @@ placePieceOnBoard:
     sw $ra, 4($sp)
     
     # Load piece fields
-    lw $t0, 0($a0)              # Load type
+    lw $s3, 0($a0)              # Load type
+    lw $t0, 0($a1)              # Load ship_num
     lw $t1, 4($a0)              # Load orientation
     lw $t2, 8($a0)              # Load row location
     lw $t3, 12($a0)             # Load col location
@@ -85,10 +88,11 @@ placePieceOnBoard:
     j piece_done       # Invalid type
 
 piece_done:
+    lw $ra, 4($sp)
+    addiu $sp, $sp, 8
     jr $ra
 
 
-    
 
 
 # Function: printBoard
@@ -139,6 +143,9 @@ done:
     lw $ra, 4($sp)              # Restore return address
     addiu $sp, $sp, 8           # Deallocate Stack Space
     jr $ra                      # Return
+
+
+
 
 
 # Function: place_tile
