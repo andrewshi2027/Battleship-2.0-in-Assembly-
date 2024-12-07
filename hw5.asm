@@ -98,19 +98,11 @@ place_success:
     jr $ra
 
 place_occupied:
-    la $t0, board
-    li $t1, board_width
-    li $t2, board_height
-
     jal zeroOut
     li $v0, 1
     jr $ra
 
 place_out:
-    la $t0, board
-    li $t1, board_width
-    li $t2, board_height
-
     jal zeroOut
     li $v0, 2
     jr $ra
