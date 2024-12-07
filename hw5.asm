@@ -65,10 +65,11 @@ placePieceOnBoard:
     
     # Load piece fields
     lw $s3, 0($a0)              # Load type
-    lw $t0, 0($a1)              # Load ship_num
-    lw $t1, 4($a0)              # Load orientation
-    lw $t2, 8($a0)              # Load row location
-    lw $t3, 12($a0)             # Load col location
+    lw $s1, 0($a1)              # Load ship_num
+    lw $s4, 4($a0)              # Load orientation
+    lw $s5, 8($a0)              # Load row location
+    lw $s6, 12($a0)             # Load col location
+
 
     # First switch on type
     li $t0, 1
