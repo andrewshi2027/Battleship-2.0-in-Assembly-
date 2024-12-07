@@ -70,7 +70,6 @@ placePieceOnBoard:
     lw $s5, 8($a0)              # Load row location
     lw $s6, 12($a0)             # Load col location
 
-
     # First switch on type
     li $t0, 1
     beq $s3, $t0, piece_square
