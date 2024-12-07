@@ -109,6 +109,8 @@ place_occupied:
 place_out:
     jal zeroOut
     li $v0, 2
+    lw $ra, 0($sp)
+    addiu $sp, $sp, 4
     jr $ra
 
 piece_done:
