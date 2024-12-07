@@ -101,6 +101,7 @@ place_success:
 
 place_occupied:
     jal zeroOut
+    
     li $v0, 1
     lw $ra, 0($sp)
     addiu $sp, $sp, 4
