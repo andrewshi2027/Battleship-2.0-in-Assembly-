@@ -87,10 +87,34 @@ placePieceOnBoard:
     beq $s3, $t0, piece_T
     j piece_done       # Invalid type
 
+# if $s2
+
+success:
+    jal zeroOut
+    li $v0, 0
+    jr $ra
+
+occupied:
+    jal zeroOut
+    li $v0, 1
+    jr $ra
+
+out_of_bounds:
+    jal zeroOut
+    li $v0, 2
+    jr $ra
+
+occupied_and_out_of_bounds:
+    jal zeroOut
+    li $v0, 3
+    jr $ra
+
 piece_done:
     lw $ra, 4($sp)
     addiu $sp, $sp, 8
     jr $ra
+
+
 
 
 
