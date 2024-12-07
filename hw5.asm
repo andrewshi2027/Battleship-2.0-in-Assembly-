@@ -71,10 +71,9 @@ placePieceOnBoard:
     lw $s6, 12($a0)             # Load col location
 
     # Return values
-    li $t1, 0               
-    li $t2, 1
-    li $t3, 2
-    li $t4, 3
+    li $t5, 0               
+    li $t6, 1
+    li $t7, 2
 
     # First switch on type
     li $t0, 1
@@ -117,10 +116,10 @@ place_out:
 piece_done:
 
     move $v0, $s2
-    beq $v0, $t1, place_success       # Return 0
-    beq $v0, $t2, place_occupied      # Return 1
-    beq $v0, $t3, place_out           # Return 2
-   
+    beq $v0, $t5, place_success       # 0
+    beq $v0, $t6, place_occupied      # 1
+    beq $v0, $t7, place_out           # 2
+
     lw $ra, 0($sp)
     addiu $sp, $sp, 4
     jr $ra
