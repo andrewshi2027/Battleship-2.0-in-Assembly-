@@ -130,8 +130,8 @@ piece_done:
 
 printBoard:
     # Function prologue
-    addiu $sp, $sp, -8          # Allocate stack space
-    sw $ra, 4($sp)              # Save return address
+    addiu $sp, $sp, -4          # Allocate stack space
+    sw $ra, 0($sp)              # Save return address
 
     #Initialize variables
     la $t0, board               # Load address of board
@@ -168,8 +168,8 @@ printBoard_next_row:
 
 done:
     # Function epilogue
-    lw $ra, 4($sp)              # Restore return address
-    addiu $sp, $sp, 8           # Deallocate Stack Space
+    lw $ra, 0($sp)              # Restore return address
+    addiu $sp, $sp, 4           # Deallocate Stack Space
     jr $ra                      # Return
 
 
