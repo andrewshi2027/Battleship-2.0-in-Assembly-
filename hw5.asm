@@ -60,8 +60,8 @@ zero_done:
 #   $a1 - ship_num
 placePieceOnBoard:
     # Function prologue
-    addiu $sp, $sp, -8
-    sw $ra, 4($sp)
+    addiu $sp, $sp, -4
+    sw $ra, 0($sp)
     
     # Load piece fields
     lw $s3, 0($a0)              # Load type
@@ -117,8 +117,8 @@ piece_done:
     beq $v0, $t3, place_out           # Return 2
     beq $v0, $t4, place_occ_out       # Return 3
 
-    lw $ra, 4($sp)
-    addiu $sp, $sp, 8
+    lw $ra, 0($sp)
+    addiu $sp, $sp, 4
     jr $ra
 
 
