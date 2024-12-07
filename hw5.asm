@@ -95,11 +95,15 @@ placePieceOnBoard:
 
 place_success:
     li $v0, 0
+    lw $ra, 0($sp)
+    addiu $sp, $sp, 4
     jr $ra
 
 place_occupied:
     jal zeroOut
     li $v0, 1
+    lw $ra, 0($sp)
+    addiu $sp, $sp, 4
     jr $ra
 
 place_out:
