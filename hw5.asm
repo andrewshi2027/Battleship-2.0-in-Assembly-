@@ -94,32 +94,32 @@ placePieceOnBoard:
     j piece_done       # Invalid type
 
 place_success:
+    li $v0, 0
     jr $ra
 
 place_occupied:
     jal zeroOut
+    li $v0, 1
     jr $ra
 
 place_out:
     jal zeroOut
+    li $v0, 2
     jr $ra
 
-place_occ_out:
-    jal zeroOut
-    jr $ra
+
 
 piece_done:
-
     move $v0, $s2
-
     beq $v0, $t1, place_success       # Return 0
     beq $v0, $t2, place_occupied      # Return 1
     beq $v0, $t3, place_out           # Return 2
-    beq $v0, $t4, place_occ_out       # Return 3
-
+   
     lw $ra, 0($sp)
     addiu $sp, $sp, 4
     jr $ra
+
+
 
 
 
