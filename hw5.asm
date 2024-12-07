@@ -215,6 +215,8 @@ place_tile:
     # Place value on the board
     sb $a2, 0($t3)              # Set board[index] = value
     li $v0, 0                   # Return 0
+    lw $ra, 0($sp)              # Restore return address
+    addiu $sp, $sp, 4           # Deallocate Stack Space
     jr $ra
 
 p_occupied:
