@@ -108,6 +108,12 @@ place_out:
     jr $ra
 
 piece_done:
+    # Return values
+    li $t1, 0               
+    li $t2, 1
+    li $t3, 2
+    li $t4, 3
+    
     move $v0, $s2
     beq $v0, $t1, place_success       # Return 0
     beq $v0, $t2, place_occupied      # Return 1
