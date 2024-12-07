@@ -65,10 +65,16 @@ placePieceOnBoard:
     
     # Load piece fields
     lw $s3, 0($a0)              # Load type
-    lw $s1, 0($a1)              # Load ship_num
+    move $s1, $a1               # Load ship_num
     lw $s4, 4($a0)              # Load orientation
     lw $s5, 8($a0)              # Load row location
     lw $s6, 12($a0)             # Load col location
+
+    # Return values
+    li $t1, 0               
+    li $t2, 1
+    li $t3, 2
+    li $t4, 3
 
     # First switch on type
     li $t0, 1
@@ -87,34 +93,33 @@ placePieceOnBoard:
     beq $s3, $t0, piece_T
     j piece_done       # Invalid type
 
-# if $s2
-
-success:
-    jal zeroOut
-    li $v0, 0
+place_success:
     jr $ra
 
-occupied:
+place_occupied:
     jal zeroOut
-    li $v0, 1
     jr $ra
 
-out_of_bounds:
+place_out:
     jal zeroOut
-    li $v0, 2
     jr $ra
 
-occupied_and_out_of_bounds:
+place_occ_out:
     jal zeroOut
-    li $v0, 3
     jr $ra
 
 piece_done:
+
+    move $v0, $s2
+
+    beq $v0, $t1, place_success       # Return 0
+    beq $v0, $t2, place_occupied      # Return 1
+    beq $v0, $t3, place_out           # Return 2
+    beq $v0, $t4, place_occ_out       # Return 3
+
     lw $ra, 4($sp)
     addiu $sp, $sp, 8
     jr $ra
-
-
 
 
 
@@ -185,8 +190,8 @@ place_tile:
     # Check if row or column is out of bounds
     lw $t0, board_width         # Load board_width
     lw $t1, board_height        # Load board_height
-    bge $a0, $t1, out           # If row >= board_height
-    bge $a1, $t0, out           # If column >= board_width
+    bge $a0, $t1, p_out           # If row >= board_height
+    bge $a1, $t0, p_out           # If column >= board_width
 
     # Calculate index in row-major order
     mul $t2, $a0, $t0           # t2 = row * board_width
@@ -196,18 +201,18 @@ place_tile:
 
     # Check if cell is occupied
     lb $t4, 0($t3)              # Load board[index]
-    bne $t4, $0, occupied       # If board[index] != 0
+    bne $t4, $0, p_occupied       # If board[index] != 0
 
     # Place value on the board
     sb $a2, 0($t3)              # Set board[index] = value
     li $v0, 0                   # Return 0
     jr $ra
 
-occupied:
+p_occupied:
     li $v0, 1                   # Return 1 (occupied)
     jr $ra
 
-out: 
+p_out: 
     li $v0, 2                   # Return 2 (out of bounds)
     jr $ra
 
