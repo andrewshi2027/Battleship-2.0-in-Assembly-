@@ -255,16 +255,12 @@ p_out:
 test_fit:
     # Function prologue
     addiu $sp, $sp, -8
-    sw $ra, 4($sp)
     sw $s0, 0($sp)
+    sw $ra, 4($sp)
 
     li $s0, 0                   # $s0 = error status
-    li $t0, 0                   # $t0 = loop counter (0 to 4)
-    li $t1, 5                   # $t1 = array size (5 pieces)
-
-    li $t7, 7
-    li $t8, 4
-    
+    li $t0, 0                   # $t0 = loop counter (0 to 5)
+    li $t1, 5                   # $t1 = array size (5 pieces)    
 
 test_loop: 
     bge $t0, $t1, test_done     # Check if loop counter exceeds array size
@@ -277,8 +273,9 @@ test_loop:
     move $a1, $t0               # Ship_num
     jal placePieceOnBoard   
 
-    beq $v0, $0, test_next      # If successful, continue to next piece
+    j test_next
 
+    beq $v0, $0, test_next      # If successful, continue to next piece
     move $s0, $v0               # Save error code
     jal zeroOut                 
     j test_done                 # Exit
