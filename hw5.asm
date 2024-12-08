@@ -269,20 +269,22 @@ T_orientation4:
     or $s2, $s2, $v0
 
     move $a0, $s5
-    addi $a0, $a0, -1           # row - 1
+    addi $a0, $a0, 1           # row + 1
     move $a1, $s6               # col
     move $a2, $s1
     jal place_tile              # Place upper tile
     or $s2, $s2, $v0
 
     move $a0, $s5
-    addi $a0, $a0, 1            # row + 1
+    addi $a0, $a0, 2            # row + 2
     move $a1, $s6               # col
     move $a2, $s1
     jal place_tile              # Place lower tile
     or $s2, $s2, $v0
 
-    move $a0, $s5               # row
+    move $a0, $s5          
+    move $a1, $s6     
+    addi $a0, $a0, 1           # row + 1
     addi $a1, $a1, 1            # col + 1
     move $a2, $s1
     jal place_tile              # Place right tile
