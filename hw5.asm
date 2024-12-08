@@ -259,33 +259,25 @@ test_fit:
     sw $s0, 0($sp)
 
     li $s0, 0                   # $s0 = error status
-    li $t1, 0                   # $t1 = loop counter (0 to 4)
-    li $t2, 5                   # $t2 = array size (5 pieces)
+    li $t0, 0                   # $t0 = loop counter (0 to 4)
+    li $t1, 5                   # $t1 = array size (5 pieces)
+
+    li $t7, 7
+    li $t8, 4
     
 
 test_loop: 
-    bge $t1, $t2, test_done     # Check if loop counter exceeds array size
+    bge $t0, $t1, test_done     # Check if loop counter exceeds array size
 
     # Calculate address of piece[$t0]
-    sll $t3, $t0, 4             # t2 = t0 * sizeof(struct piece)
-    add $t4, $a0, $t2           # t2 = address of piece[t0]
+    sll $t2, $t0, 4             # $t2 = $t0 * sizeof(struct piece)
+    add $t3, $a0, $t2           # $t2 = address of piece[$t0]
 
-    lw $t5, 0($t4)
-    lw $t6, 4($t4)
-
-    # Wrong type
-    blt $t5, 0, wrong           # Less than 0
-    bge $t5, 7, wrong           # Greater than 7
-
-    # Wrong orientation
-    blt $t6, 0, wrong           # Less than 0
-    blt $t6, 4, wrong           # Greater than 7
-
-    move $a0, $t4               # Address of piece struct
-    move $a1, $t1               # Ship_num
+    move $a0, $t3               # Address of piece struct
+    move $a1, $t0               # Ship_num
     jal placePieceOnBoard   
 
-    beq $v0, $0, test_next      # If successful, continue
+    beq $v0, $0, test_next      # If successful, continue to next piece
 
     move $s0, $v0               # Save error code
     jal zeroOut                 
