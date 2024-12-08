@@ -60,8 +60,9 @@ zero_done:
 #   $a1 - ship_num
 placePieceOnBoard:
     # Function prologue
-    addiu $sp, $sp, -4
+    addiu $sp, $sp, -8
     sw $ra, 0($sp)
+    sw $s7, 4($sp)
     
     # Load piece fields
     lw $s3, 0($a0)              # Load type
@@ -71,9 +72,9 @@ placePieceOnBoard:
     lw $s6, 12($a0)             # Load col location
 
     # Return values
-    li $t8, 0               
-    li $t9, 1
-    li $t7, 2
+    li $t8, 0                   # 0: success
+    li $t9, 1                   # 1: occupied
+    li $s7, 2                   # 2: out of bounds
 
     # First switch on type
     li $t0, 1
@@ -93,24 +94,24 @@ placePieceOnBoard:
     j piece_done       # Invalid type
 
 place_success:
-    # li $v0, 0
+    lw $s7, 4($sp)
     lw $ra, 0($sp)
-    addiu $sp, $sp, 4
+    addiu $sp, $sp, 8
     jr $ra
 
 place_occupied:
     jal zeroOut
-    
-    # li $v0, 1
+    lw $s7, 4($sp)
     lw $ra, 0($sp)
-    addiu $sp, $sp, 4
+    addiu $sp, $sp, 8
     jr $ra
 
 place_out:
     jal zeroOut
     # li $v0, 2
+    lw $s7, 4($sp)
     lw $ra, 0($sp)
-    addiu $sp, $sp, 4
+    addiu $sp, $sp, 8
     jr $ra
 
 piece_done:
@@ -118,10 +119,11 @@ piece_done:
     move $v0, $s2
     beq $v0, $t8, place_success       # 0
     beq $v0, $t9, place_occupied      # 1
-    beq $v0, $t7, place_out           # 2
+    beq $v0, $s7, place_out           # 2
 
+    lw $s7, 4($sp)
     lw $ra, 0($sp)
-    addiu $sp, $sp, 4
+    addiu $sp, $sp, 8
     jr $ra
 
 
