@@ -247,8 +247,6 @@ p_out:
 
 
 
-
-
 # Function: test_fit
 # Arguments: 
 #   $a0 - address of piece array (5 pieces)
@@ -258,39 +256,42 @@ test_fit:
     sw $s0, 0($sp)
     sw $ra, 4($sp)
 
-    li $s0, 0
-    li $t5, 0
-    li $t6, 5
+    li $s0, 0                   # $s0 = error status
+    li $t0, 1                   # $t0 = loop counter (0 to 4)
+    li $t1, 5                   # $t1 = array size (5 pieces)    
 
-test_loop:
-    bge $t5, $t6, test_done
+test_loop: 
+    bge $t0, $t1, test_done     # Check if loop counter exceeds array size
 
-    # Calculate address of piece
-    sll $t2, $t5, 4
-    add $t3, $a0, $t2
+    # Calculate address of piece[$t0]
+    sll $t2, $t0, 4             # $t2 = $t0 * sizeof(struct piece)
+    add $t3, $a0, $t2           # $t3 = address of piece[$t0]
 
-    move $a0, $t3
+    move $a0, $t3               # Address of piece struct
+    move $a1, $t0               # Ship_num
+    jal placePieceOnBoard       # Call placePieceOnBoard function
 
-    addi $a1, $t5, 1
-    jal placePieceOnBoard
-
-    beq $v0, $0, test_next
-
-    move $s0, $v0
-    jal zeroOut
-    j test_done
+    # Check if there was an error (i.e., $v0 != 0)
+    bne $v0, $0, handle_error   # If error, jump to handle_error
 
 test_next:
-    j test_loop
+    addiu $t0, $t0, 1           # Increment index
+    j test_loop                 # Continue testing next piece
+
+handle_error:
+    move $s0, $v0               # Save error code
+    jal zeroOut                 # Call zeroOut to reset the board
+    j test_done                 # Exit after handling error
 
 test_done:
-    move $v0, $s0
+    move $v0, $s0               # Return the error code
 
-    # Function epilogue
+    # Restore the stack
     lw $s0, 0($sp)
     lw $ra, 4($sp)
     addiu $sp, $sp, 8
     jr $ra
+
 
 
 
