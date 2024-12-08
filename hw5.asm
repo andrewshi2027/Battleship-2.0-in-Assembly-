@@ -116,12 +116,22 @@ place_out:
     addiu $sp, $sp, 8
     jr $ra
 
+another_one:
+    jal zeroOut
+    # li $v0, 2
+    lw $s7, 4($sp)
+    lw $ra, 0($sp)
+    addiu $sp, $sp, 8
+    jr $ra
+
 piece_done:
 
     move $v0, $s2
     beq $v0, $t8, place_success       # 0
     beq $v0, $t9, place_occupied      # 1
     beq $v0, $s7, place_out           # 2
+    li $t8, 3
+    beq $v0, $t8, another_one
 
     lw $s7, 4($sp)
     lw $ra, 0($sp)
