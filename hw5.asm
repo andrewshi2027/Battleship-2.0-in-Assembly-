@@ -63,6 +63,8 @@ placePieceOnBoard:
     addiu $sp, $sp, -8
     sw $ra, 0($sp)
     sw $s7, 4($sp)
+
+    li $s2, 0
     
     # Load piece fields
     lw $s3, 0($a0)              # Load type
