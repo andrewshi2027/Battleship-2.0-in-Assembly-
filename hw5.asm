@@ -64,7 +64,7 @@ placePieceOnBoard:
     sw $ra, 0($sp)
     sw $s7, 4($sp)
 
-    li $s2, 0
+    li $s2, 0                   # Reset error number
     
     # Load piece fields
     lw $s3, 0($a0)              # Load type
@@ -213,8 +213,8 @@ place_tile:
     # Check if row or column is out of bounds
     lw $t0, board_width         # Load board_width
     lw $t1, board_height        # Load board_height
-    bge $a0, $t1, p_out           # If row >= board_height
-    bge $a1, $t0, p_out           # If column >= board_width
+    bge $a0, $t1, p_out         # If row >= board_height
+    bge $a1, $t0, p_out         # If column >= board_width
 
     # Calculate index in row-major order
     mul $t2, $a0, $t0           # t2 = row * board_width
@@ -224,7 +224,7 @@ place_tile:
 
     # Check if cell is occupied
     lb $t4, 0($t3)              # Load board[index]
-    bne $t4, $0, p_occupied       # If board[index] != 0
+    bne $t4, $0, p_occupied     # If board[index] != 0
 
     # Place value on the board
     sb $a2, 0($t3)              # Set board[index] = value
@@ -254,6 +254,61 @@ p_out:
 #   $a0 - address of piece array (5 pieces)
 test_fit:
     # Function prologue
+    addiu $sp, $sp, -8
+    sw $ra, 4($sp)
+    sw $s0, 0($sp)
+
+    li $s0, 0                   # $s0 = error status
+    li $t1, 0                   # $t1 = loop counter (0 to 4)
+    li $t2, 5                   # $t2 = array size (5 pieces)
+    
+
+test_loop: 
+    bge $t1, $t2, test_done     # Check if loop counter exceeds array size
+
+    # Calculate address of piece[$t0]
+    sll $t3, $t0, 4             # t2 = t0 * sizeof(struct piece)
+    add $t4, $a0, $t2           # t2 = address of piece[t0]
+
+    lw $t5, 0($t4)
+    lw $t6, 4($t4)
+
+    # Wrong type
+    blt $t5, 0, wrong           # Less than 0
+    bge $t5, 7, wrong           # Greater than 7
+
+    # Wrong orientation
+    blt $t6, 0, wrong           # Less than 0
+    blt $t6, 4, wrong           # Greater than 7
+
+    move $a0, $t4               # Address of piece struct
+    move $a1, $t1               # Ship_num
+    jal placePieceOnBoard   
+
+    beq $v0, $0, test_next      # If successful, continue
+
+    move $s0, $v0               # Save error code
+    jal zeroOut                 
+    j test_done                 # Exit
+
+wrong:
+    li $v0, 4                   # Wrong type or orientation
+
+    lw $s0, 0($sp)
+    lw $ra, 4($sp)
+    addiu $sp, $sp, 8
+    jr $ra
+
+test_next:
+    addiu $t0, $t0, 1           # Increment index
+    j test_loop                 # Continue test_loop
+
+test_done:
+    move $v0, $s0               # Return 
+
+    lw $s0, 0($sp)
+    lw $ra, 4($sp)
+    addiu $sp, $sp, 8
     jr $ra
 
 
