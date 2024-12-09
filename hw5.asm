@@ -268,7 +268,7 @@ check_for_invalid:
     sll $t5, $t6, 2             # Memory offset: counter * 4
     add $t5, $t5, $a0           # Memory address: base + offset
     lb $t7, 0($t5)              # Load ship number
-    blt $t7, $zero, invalid     # Ship number < 0
+    blt $t7, $0, invalid     # Ship number < 0
     bgt $t7, $t8, invalid       # Ship number > 7
 
     # Check the orientation
@@ -276,7 +276,7 @@ check_for_invalid:
     sll $t5, $t6, 2             # Memory offset: counter * 4
     add $t5, $t5, $a0           # Memory address: base + offset
     lb $t7, 0($t5)              # Load orientation
-    blt $t7, $zero, invalid     # Orientation < 0
+    blt $t7, $0, invalid     # Orientation < 0
     bgt $t7, $t9, invalid       # Orientation > 4
 
     addi $t6, $t6, 3            # Skip row and column
