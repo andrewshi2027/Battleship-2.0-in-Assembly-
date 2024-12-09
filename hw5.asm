@@ -250,47 +250,78 @@ p_out:
 # Function: test_fit
 # Arguments: 
 #   $a0 - address of piece array (5 pieces)
+
 test_fit:
-    # Function prologue
-    addiu $sp, $sp, -8
-    sw $s0, 0($sp)
-    sw $ra, 4($sp)
+    addi $sp, $sp, -12         
+    sw $ra, 0($sp)             
+    sw $a0, 4($sp)              
 
-    li $s0, 0                   # $s0 = error status
-    li $t0, 1                   # $t0 = loop counter (0 to 4)
-    li $t1, 5                   # $t1 = array size (5 pieces)    
+    li $t6, 0                   # Counter = 0
+    li $t8, 7                   # Maximum ship number (7)
+    li $t9, 4                   # Maximum orientations (4)
+    li $s7, 20                  # Total bytes = 20 (5 pieces * 4 bytes each)
 
-test_loop: 
-    bge $t0, $t1, test_done     # Check if loop counter exceeds array size
+check_for_invalid:
+    beq $t6, $s7, next          # Counter == 20
 
-    # Calculate address of piece[$t0]
-    sll $t2, $t0, 4             # $t2 = $t0 * sizeof(struct piece)
-    add $t3, $a0, $t2           # $t3 = address of piece[$t0]
+    # Check the ship number
+    sll $t5, $t6, 2             # Memory offset: counter * 4
+    add $t5, $t5, $a0           # Memory address: base + offset
+    lb $t7, 0($t5)              # Load ship number
+    blt $t7, $zero, invalid     # Ship number < 0
+    bgt $t7, $t8, invalid       # Ship number > 7
 
-    move $a0, $t3               # Address of piece struct
-    move $a1, $t0               # Ship_num
-    jal placePieceOnBoard       # Call placePieceOnBoard function
+    # Check the orientation
+    addi $t6, $t6, 1            # Increment counter to next byte
+    sll $t5, $t6, 2             # Memory offset: counter * 4
+    add $t5, $t5, $a0           # Memory address: base + offset
+    lb $t7, 0($t5)              # Load orientation
+    blt $t7, $zero, invalid     # Orientation < 0
+    bgt $t7, $t9, invalid       # Orientation > 4
 
-    # Check if there was an error (i.e., $v0 != 0)
-    bne $v0, $0, handle_error   # If error, jump to handle_error
+    addi $t6, $t6, 3            # Skip row and column
+    j check_for_invalid         # Check next piece
 
-test_next:
-    addiu $t0, $t0, 1           # Increment index
-    j test_loop                 # Continue testing next piece
+next:
+    li $t6, 0                   # Counter = 0
+    li $v1, 0                   # Error code = 0
+    li $a1, 1                   # Ship number = 1
+    sw $a1, 8($sp)              # Save ship number to stack
 
-handle_error:
-    move $s0, $v0               # Save error code
-    jal zeroOut                 # Call zeroOut to reset the board
-    j test_done                 # Exit after handling error
+placePieces:
+    beq $t6, $s7, test_done     # Counter = 20
+
+    lw $a0, 4($sp)              # Load the starting address of the piece array
+    sll $t7, $t6, 2             # Offset: counter * 4
+    add $a0, $a0, $t7           # Address of the current piece
+    jal placePieceOnBoard       
+    or $v1, $v1, $v0            # Error code
+
+    addi $t6, $t6, 4            # Move to the next piece (4 bytes per piece)
+
+    lw $a1, 8($sp)              # Load current ship number from stack
+    addi $a1, $a1, 1            # Increment Ship number
+    sw $a1, 8($sp)              # Save updated ship number back to stack
+
+    j placePieces               # Continue placing the next piece
 
 test_done:
-    move $v0, $s0               # Return the error code
+    lw $ra, 0($sp)              
+    lw $a0, 4($sp)
+    lw $a1, 8($sp)
+    addi $sp, $sp, 12       
 
-    # Restore the stack
-    lw $s0, 0($sp)
-    lw $ra, 4($sp)
-    addiu $sp, $sp, 8
-    jr $ra
+    move $v0, $v1               # Error code 
+    jr $ra                      
+
+invalid:
+    lw $ra, 0($sp)              
+    lw $a0, 4($sp)
+    lw $a1, 8($sp)
+    addi $sp, $sp, 12    
+
+    li $v0, 4                   # Return 4
+    jr $ra                      
 
 
 
